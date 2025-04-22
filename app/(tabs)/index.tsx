@@ -1,25 +1,25 @@
-import { Image, StyleSheet, Platform, View } from 'react-native';
+import { Image, StyleSheet, Platform, View, ScrollView } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { HelloWave } from '@/components/HelloWave';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React from 'react';
-import TranslatorKorean from '@/components/Translator/KoreanTrans';
+import React, { useEffect, useState } from 'react';
+import TranslatorKorean from '@/components/Translator/KoreanTranslator';
+import { CardList } from '@/components/Translator/CardList';
+import { getAllTranslationCards, TranslationCard, deleteTranslationCard } from '@/utils/database';
+import { Card } from '@/types/Card';
 
 export default function HomeScreen() {
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText size="xxxl" weight="bold" style={styles.title}>Korean Translator</ThemedText>
-          <HelloWave />
+    <ScrollView>
+      <ThemedView style={styles.container}>
+        <ThemedView style={styles.translatorContainer}>
+          <TranslatorKorean />
         </ThemedView>
-        <ThemedText style={styles.subtitle}>Translate between Korean and English</ThemedText>
       </ThemedView>
-      <ThemedView style={styles.translatorContainer}>
-        <TranslatorKorean />
-      </ThemedView>
-    </ThemedView>
+    </ScrollView>
   );
 }
 
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingTop: 60,
+    gap: 16,
   },
   header: {
     marginBottom: 24,
