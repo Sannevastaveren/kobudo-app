@@ -3,44 +3,58 @@ import {
     FlatList,
     StyleSheet,
     TextInput,
-    TouchableOpacity,
     View,
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "../ThemedView";
-import { TranslationCard } from "@/utils/database";
-import { addTranslationCard } from "@/utils/database";
 import { ThemedButton } from "../ThemedButton";
 import { CardItem } from "./CardItem";
 import { ThemedTextInput } from "../ThemedTextInput";
 import { Collapsible } from "../Collapsible";
+import { PrelimCardList } from "./PrelimCardList";
+import { useCards } from "@/hooks/useCards";
+import { addTranslationCardsInBulk } from "@/utils/database";
 
 type CopyProcesserProps = {
     onCardAdded?: () => void;
 };
-type WordPair = {
+export type WordPair = {
     korean: string;
     english: string;
 };
 
 export function CopyProcesser({ onCardAdded }: CopyProcesserProps) {
+    const { handleCardAdded } = useCards();
     const [pastedText, setPastedText] = useState("");
     const [regexString, setRegexString] = useState<string>(
-        '/([^-\n]+?)s*-s*"([^"]+)"/g'
+        '([^-\n]+?)\\s*-\\s*"([^"]+)"'
     );
     const [pairs, setPairs] = useState<WordPair[]>([]);
 
     function parseTextToWordPairs(text: string): WordPair[] {
         const pairs: WordPair[] = [];
-
+        const regex = new RegExp(regexString, 'g');
         let match;
-        const regex = new RegExp(regexString);
         while ((match = regex.exec(text)) !== null) {
             const korean = match[1].trim();
             const english = match[2].trim();
             pairs.push({ korean, english });
         }
         return pairs;
+    }
+    function handleSaveCards(pairs: WordPair[]) {
+
+        addTranslationCardsInBulk(pairs.map((pair) => ({
+            originalText: pair.english,
+            translatedText: pair.korean,
+        })));
+
+        reset()
+    }
+
+    function reset() {
+        setPastedText("");
+        setPairs([]);
     }
 
     return (
@@ -76,21 +90,13 @@ export function CopyProcesser({ onCardAdded }: CopyProcesserProps) {
                         size="md"
                     />
                 </ThemedView>
-            </ThemedView>
-            <ThemedView>
-                <FlatList
-                    data={pairs}
-                    renderItem={({ item }) => (
-                        <CardItem
-                            card={{
-                                originalText: item.english,
-                                translatedText: item.korean,
-                                id: 0,
-                                createdAt: new Date().toISOString(),
-                            }}
-                        />
-                    )}
-                />
+                {pairs.length > 0 && (
+                    <PrelimCardList
+                        cards={pairs}
+                        onSaveCards={handleSaveCards}
+                        onCancel={() => setPairs([])}
+                    />
+                )}
             </ThemedView>
         </ThemedView>
     );

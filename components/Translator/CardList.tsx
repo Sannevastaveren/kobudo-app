@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'none',
+        maxHeight: '80%',
     },
     listContainer: {
         padding: 16,

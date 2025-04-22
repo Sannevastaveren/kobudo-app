@@ -75,3 +75,29 @@ export const deleteTranslationCard = async (id: number): Promise<void> => {
     throw error;
   }
 };
+
+export const addTranslationCardsInBulk = async (
+  cards: { originalText: string; translatedText: string }[]
+): Promise<number[]> => {
+  try {
+    const existingCards = await AsyncStorage.getItem(STORAGE_KEY);
+    const currentCards: TranslationCard[] = existingCards
+      ? JSON.parse(existingCards)
+      : [];
+
+    const newCards: TranslationCard[] = cards.map((card) => ({
+      id: Date.now() + Math.random(), // Ensure unique IDs
+      originalText: card.originalText,
+      translatedText: card.translatedText,
+      createdAt: new Date().toISOString(),
+    }));
+
+    const updatedCards = [...currentCards, ...newCards];
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCards));
+
+    return newCards.map((card) => card.id);
+  } catch (error) {
+    console.error("Failed to add cards in bulk:", error);
+    throw error;
+  }
+};
