@@ -29,7 +29,7 @@ export default function TranslatorKorean() {
                 {
                     method: 'POST',
                     headers: {
-                        'X-goog-api-key': 'AIzaSyBUqdy43jeoseJdQo0yizLjdU2AlMhLcM8 ',
+                        'X-goog-api-key': process.env.ApiKey ?? '',
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
