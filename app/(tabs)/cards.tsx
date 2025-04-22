@@ -5,9 +5,8 @@ import { CardList } from '@/components/Translator/CardList';
 import { ThemedView } from '@/components/ThemedView';
 import { TranslationCard } from '@/utils/database';
 import { useCards } from '@/hooks/useCards';
-import { ThemedButton } from '@/components/ThemedButton';
 import { useFocusEffect } from 'expo-router';
-
+import { CopyProcesser } from '@/components/Translator/CopyProcesser';
 export default function CardsScreen() {
     const { cards, handleCardDelete, reload } = useCards();
 
@@ -24,6 +23,7 @@ export default function CardsScreen() {
 
     return (
         <ThemedView style={styles.container}>
+            <CopyProcesser />
             <CardList cards={cards} onCardPress={handleCardPress} />
         </ThemedView>
     );

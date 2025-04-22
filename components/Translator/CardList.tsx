@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { TranslationCard } from '@/utils/database';
 import { ThemedView } from '../ThemedView';
-import { ThemedButton } from '../ThemedButton';
+import { Colors } from '@/constants/Colors';
+import { CardItem } from './CardItem';
+
 type CardListProps = {
     cards: TranslationCard[];
     onCardPress?: (card: TranslationCard) => void;
@@ -11,11 +13,7 @@ type CardListProps = {
 
 export function CardList({ cards, onCardPress }: CardListProps) {
     const renderCard = ({ item }: { item: TranslationCard }) => (
-        <ThemedView style={styles.card}>
-            <ThemedText style={styles.cardText}>{item.originalText}</ThemedText>
-            <ThemedText style={styles.cardText}>{item.translatedText}</ThemedText>
-            <ThemedButton title="Delete" onPress={() => onCardPress?.(item)} />
-        </ThemedView>
+        <CardItem card={item} onCardPress={onCardPress} />
     );
 
     return (
@@ -25,8 +23,9 @@ export function CardList({ cards, onCardPress }: CardListProps) {
                 data={cards}
                 renderItem={renderCard}
                 keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={styles.container}
+                contentContainerStyle={styles.listContainer}
                 showsVerticalScrollIndicator={false}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
             />
         </ThemedView>
     );
@@ -34,20 +33,29 @@ export function CardList({ cards, onCardPress }: CardListProps) {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: 'none',
+    },
+    listContainer: {
         padding: 16,
-        gap: 16,
+        gap: 12,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
+        paddingHorizontal: 16,
+        paddingTop: 16,
+        paddingBottom: 8,
+    },
+    cardContainer: {
+        borderRadius: 12,
+        overflow: 'hidden',
     },
     card: {
         flexDirection: 'row',
-        gap: 16,
-        justifyContent: 'space-between',
         padding: 16,
-        borderRadius: 8,
+        borderRadius: 12,
+        backgroundColor: Colors.dark.cardBackground,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -57,8 +65,30 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 2,
     },
-    cardText: {
+    textContainer: {
+        flex: 1,
+        gap: 8,
+    },
+    originalText: {
         fontSize: 16,
-        marginBottom: 8,
+        fontWeight: '600',
+        color: Colors.dark.text,
+    },
+    translatedText: {
+        fontSize: 16,
+        color: Colors.dark.text,
+        opacity: 0.8,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: Colors.dark.text,
+        opacity: 0.2,
+    },
+    deleteButton: {
+        padding: 8,
+        marginLeft: 8,
+    },
+    separator: {
+        height: 8,
     },
 });
