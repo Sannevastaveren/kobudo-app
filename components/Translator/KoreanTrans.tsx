@@ -6,6 +6,7 @@ import { ThemedText } from '../ThemedText';
 import { ThemedTextInput } from '../ThemedTextInput';
 import { ThemedButton } from '../ThemedButton';
 import { createStyleSheet, spacing, borderRadius } from '@/utils/styles';
+import { API_KEY } from '@env';
 
 export default function TranslatorKorean() {
     const [text, setText] = useState('');
@@ -29,7 +30,7 @@ export default function TranslatorKorean() {
                 {
                     method: 'POST',
                     headers: {
-                        'X-goog-api-key': process.env.ApiKey ?? '',
+                        'X-goog-api-key': API_KEY,
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
