@@ -61,7 +61,6 @@ const styles = createStyleSheet({
         borderRadius: borderRadius('md'),
         borderWidth: 1,
         flexDirection: 'row',
-        flex: 1,
         gap: spacing('sm'),
         alignItems: 'center',
         justifyContent: 'center',

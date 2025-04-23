@@ -1,66 +1,94 @@
-import { Image, StyleSheet, Platform, View, ScrollView } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-
-import { HelloWave } from '@/components/HelloWave';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import React, { useEffect, useState } from 'react';
-import TranslatorKorean from '@/components/Translator/KoreanTranslator';
-import { CardList } from '@/components/Translator/CardList';
-import { getAllTranslationCards, TranslationCard, deleteTranslationCard } from '@/utils/database';
-import { Card } from '@/types/Card';
+import { ThemedView } from "@/components/ThemedView";
+import { useCollections } from "@/components/Collections/hooks/useCollections";
+import { StyleSheet } from "react-native";
+import { CollectionList } from "@/components/Collections/components/CollectionList";
+import { CreateCollection } from "@/components/Collections/components/CreateCollection";
+import { useCallback, useState } from "react";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedButton } from "@/components/ThemedButton";
+import { router, useFocusEffect } from "expo-router";
+import { Collection } from "@/utils/database/collections";
 
 export default function HomeScreen() {
+  const {
+    collections,
+    reload,
+    handleCreateCollection,
+    handleDeleteCollection,
+  } = useCollections();
+  const [showCreateCollection, setShowCreateCollection] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      reload();
+    }, [])
+  );
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      reload();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [reload]);
+
+  const handleCreateNewCollection = (name: string, description: string) => {
+    handleCreateCollection(name, description);
+    setShowCreateCollection(false);
+  };
+
+  const handleCollectionPress = (collection: Collection) => {
+    router.push({
+      pathname: "/collections/[id]",
+      params: { id: collection.id.toString() },
+    });
+  };
 
   return (
-    <ScrollView>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.translatorContainer}>
-          <TranslatorKorean />
-        </ThemedView>
+    <ThemedView style={styles.container}>
+      <ThemedView style={styles.header}>
+        <ThemedText style={styles.title}>Collections</ThemedText>
+        <ThemedButton
+          title="Add"
+          icon="add"
+          size="sm"
+          onPress={() => setShowCreateCollection(true)}
+        />
+        <CreateCollection
+          visible={showCreateCollection}
+          onCreateCollection={handleCreateNewCollection}
+          onCancel={() => setShowCreateCollection(false)}
+        />
       </ThemedView>
-    </ScrollView>
+      <CollectionList
+        collections={collections}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        onCollectionPress={handleCollectionPress}
+        onDeleteCollection={handleDeleteCollection}
+      />
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 16,
     paddingTop: 60,
     gap: 16,
+    height: "100%",
   },
   header: {
-    marginBottom: 24,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 8,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    gap: 16,
+    alignItems: "center",
   },
   title: {
-    fontSize: 36,
-    fontWeight: '700',
-  },
-  subtitle: {
-    fontSize: 16,
-    opacity: 0.7,
-  },
-  translatorContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    padding: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 6,
   },
 });
