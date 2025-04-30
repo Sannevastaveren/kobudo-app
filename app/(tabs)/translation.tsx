@@ -5,13 +5,9 @@ import TranslatorKorean from "@/components/Cards/components/KoreanTranslator";
 
 export default function HomeScreen() {
   return (
-    <ScrollView>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.translatorContainer}>
-          <TranslatorKorean collectionId={1} />
-        </ThemedView>
-      </ThemedView>
-    </ScrollView>
+    <ThemedView style={styles.container}>
+      <TranslatorKorean collectionId={1} />
+    </ThemedView>
   );
 }
 

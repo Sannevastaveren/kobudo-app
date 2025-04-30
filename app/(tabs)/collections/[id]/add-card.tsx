@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContainer: {
-    width: "100%",
+    width: "40%",
+    minWidth: 300,
     gap: 16,
   },
 });

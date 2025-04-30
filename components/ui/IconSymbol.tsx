@@ -22,6 +22,9 @@ const MAPPING = {
   pencil: "edit",
   "pencil.slash": "edit-off",
   xmark: "close",
+  play: "book",
+  school: "school",
+  "school.fill": "school",
 } as Partial<
   Record<
     import("expo-symbols").SymbolViewProps["name"],

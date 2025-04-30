@@ -118,7 +118,6 @@ export function CardEditModal({
                   }
                   placeholder="Enter original text"
                   placeholderTextColor={Colors.dark.text + "80"}
-                  autoFocus={true}
                   returnKeyType="next"
                 />
               </View>

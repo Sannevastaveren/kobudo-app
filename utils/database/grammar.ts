@@ -5,6 +5,7 @@ export interface GrammarConcept {
   id: string;
   name: string;
   description: string;
+  summary: string;
   createdAt: string;
   collectionId?: number; // Optional reference to a collection
 }

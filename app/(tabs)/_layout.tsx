@@ -46,6 +46,23 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="grammar"
+        options={{
+          title: "Grammar",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="book.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="grammar/[id]"
+        options={{
+          href: null,
+          title: "Grammar details",
+          headerShown: true,
+        }}
+      />
+      <Tabs.Screen
         name="collections/[id]"
         options={{
           href: null,
@@ -67,6 +84,15 @@ export default function TabLayout() {
           href: null,
           title: "Add grammar",
           headerShown: true,
+        }}
+      />
+      <Tabs.Screen
+        name="collections/[id]/study-card"
+        options={{
+          title: "Study card",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="school" color={color} />
+          ),
         }}
       />
     </Tabs>

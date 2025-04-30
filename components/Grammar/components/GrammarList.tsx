@@ -5,6 +5,9 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedButton } from "@/components/ThemedButton";
 import { useGrammar } from "../hooks/useGrammar";
 import { GrammarConcept } from "@/utils/database/grammar";
+import Markdown from "react-native-markdown-display";
+import { router } from "expo-router";
+import { GrammarItem } from "./GrammarItem";
 
 interface GrammarListProps {
   collectionId?: number;
@@ -18,19 +21,7 @@ export const GrammarList: React.FC<GrammarListProps> = ({ collectionId }) => {
     : concepts;
 
   const renderItem = ({ item }: { item: GrammarConcept }) => (
-    <ThemedView style={styles.conceptCard}>
-      <ThemedView style={styles.conceptHeader}>
-        <ThemedText style={styles.conceptName}>{item.name}</ThemedText>
-        <ThemedButton
-          icon="trash"
-          onPress={() => handleConceptDelete(item.id)}
-          title="Delete"
-        />
-      </ThemedView>
-      <ThemedText style={styles.conceptDescription}>
-        {item.description}
-      </ThemedText>
-    </ThemedView>
+    <GrammarItem concept={item} />
   );
 
   return (
@@ -64,6 +55,10 @@ const styles = StyleSheet.create({
   conceptCard: {
     padding: 16,
     borderRadius: 8,
+    gap: 8,
+  },
+  conceptActions: {
+    flexDirection: "row",
     gap: 8,
   },
   conceptHeader: {
