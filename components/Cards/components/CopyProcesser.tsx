@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View } from "react-native";
+import React, { useState, useRef } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  View,
+  Animated,
+  FlatList,
+} from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedButton } from "@/components/ThemedButton";
@@ -9,6 +16,10 @@ import { Collapsible } from "@/components/Collapsible";
 import { useCards } from "@/components/Cards/hooks/useCards";
 import { addTranslationCardsInBulk } from "@/utils/database/cards";
 import { PrelimCardList } from "@/components/Cards/components/PrelimCardList";
+
+const HEADER_MIN_HEIGHT = 60;
+const HEADER_MAX_HEIGHT = 250;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 type CopyProcesserProps = {
   collectionId: number;
@@ -25,6 +36,19 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
     '([^-\n]+?)\\s*-\\s*"([^"]+)"'
   );
   const [pairs, setPairs] = useState<WordPair[]>([]);
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: "clamp",
+  });
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
 
   function parseTextToWordPairs(text: string): WordPair[] {
     const pairs: WordPair[] = [];
@@ -74,9 +98,9 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
     setPairs([]);
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ThemedView style={styles.container}>
+  const renderHeader = () => (
+    <Animated.View style={[styles.header, { height: headerHeight }]}>
+      <Animated.View style={[styles.headerContent, { opacity: headerOpacity }]}>
         <ThemedText style={styles.title}>Paste Korean Words</ThemedText>
         <Collapsible title="Change regex (optional)">
           <View style={styles.regexInputContainer}>
@@ -107,11 +131,37 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
             size="md"
           />
         </ThemedView>
+      </Animated.View>
+    </Animated.View>
+  );
+
+  const renderContent = () => (
+    <PrelimCardList
+      cards={pairs}
+      onSaveCards={handleSaveCards}
+      onCancel={() => setPairs([])}
+    />
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ThemedView style={styles.container}>
+        {renderHeader()}
         {pairs.length > 0 && (
-          <PrelimCardList
-            cards={pairs}
-            onSaveCards={handleSaveCards}
-            onCancel={() => setPairs([])}
+          <FlatList
+            data={[{ key: "content" }]}
+            renderItem={renderContent}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: false }
+            )}
+            scrollEventThrottle={16}
+            contentContainerStyle={[
+              styles.scrollContent,
+              {
+                paddingTop: HEADER_MAX_HEIGHT,
+              },
+            ]}
           />
         )}
       </ThemedView>
@@ -121,8 +171,21 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: 12,
-    height: "100%",
+    flex: 1,
+  },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    overflow: "hidden",
+    zIndex: 1,
+  },
+  headerContent: {
+    padding: 16,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   regexInputContainer: {
     paddingHorizontal: 12,

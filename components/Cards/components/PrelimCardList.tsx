@@ -1,5 +1,5 @@
 import React, { useState, useCallback, memo } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedButton } from "@/components/ThemedButton";
@@ -84,27 +84,22 @@ export function PrelimCardList({
     }
   }, [editingIndex, editedCard, updateCard]);
 
-  const renderItem = useCallback(
-    ({ item, index }: { item: WordPair; index: number }) => (
-      <CardItem
-        key={item.english + item.korean + index}
-        item={item}
-        index={index}
-        onEditPress={handleEditPress}
-        onRemove={removeCard}
-      />
-    ),
-    [handleEditPress, removeCard]
-  );
-
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>Review Cards</ThemedText>
-      <FlatList
-        data={cards}
-        renderItem={renderItem}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+      <View style={styles.cardsContainer}>
+        {cards.map((item, index) => (
+          <React.Fragment key={item.english + item.korean + index}>
+            <CardItem
+              item={item}
+              index={index}
+              onEditPress={handleEditPress}
+              onRemove={removeCard}
+            />
+            {index < cards.length - 1 && <View style={styles.separator} />}
+          </React.Fragment>
+        ))}
+      </View>
       <View style={styles.buttonContainer}>
         <ThemedButton
           icon="close"
@@ -171,12 +166,15 @@ export function PrelimCardList({
 
 const styles = StyleSheet.create({
   container: {
-    height: "60%",
+    flex: 1,
     gap: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+  cardsContainer: {
+    flex: 1,
   },
   card: {
     padding: 12,
@@ -207,6 +205,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 12,
     marginTop: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   modalContent: {
     padding: 16,
