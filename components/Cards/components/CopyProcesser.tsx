@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { SafeAreaView, StyleSheet, TextInput, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedButton } from "@/components/ThemedButton";
@@ -30,11 +30,31 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
     const pairs: WordPair[] = [];
     const regex = new RegExp(regexString, "g");
     let match;
+
     while ((match = regex.exec(text)) !== null) {
       const korean = match[1].trim();
       const english = match[2].trim();
-      pairs.push({ korean, english });
+
+      // Split by commas and clean up each translation
+      const translations = english
+        .split(",")
+        .map((t) => {
+          // Remove quotes and clean up whitespace
+          return t.replace(/^"|"$/g, "").trim();
+        })
+        .filter((t) => t); // Remove empty translations
+
+      const koreanRemoveEnglish = korean.replace(/"\s*[^"]*?\s*"/g, "");
+
+      // Create a pair for each translation
+      translations.forEach((translation) => {
+        pairs.push({
+          korean: koreanRemoveEnglish, // Remove optional parts in brackets
+          english: translation,
+        });
+      });
     }
+    console.log(pairs);
     return pairs;
   }
   function handleSaveCards(pairs: WordPair[]) {
@@ -55,11 +75,11 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView>
+    <SafeAreaView style={styles.container}>
+      <ThemedView style={styles.container}>
         <ThemedText style={styles.title}>Paste Korean Words</ThemedText>
         <Collapsible title="Change regex (optional)">
-          <View>
+          <View style={styles.regexInputContainer}>
             <ThemedTextInput
               style={styles.regexInput}
               value={regexString}
@@ -95,13 +115,18 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
           />
         )}
       </ThemedView>
-    </ThemedView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     gap: 12,
+    height: "100%",
+  },
+  regexInputContainer: {
+    paddingHorizontal: 12,
+    marginBottom: 12,
   },
   buttonContainer: {
     paddingVertical: 12,
@@ -113,22 +138,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   regexInput: {
-    borderWidth: 1,
-    borderColor: "#666",
     borderRadius: 8,
     marginBottom: 12,
     padding: 2,
     color: "#fff",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "#222",
   },
   input: {
+    marginTop: 12,
     minHeight: 100,
-    borderWidth: 1,
     maxHeight: 100,
-    borderColor: "#666",
     borderRadius: 8,
     padding: 12,
     color: "#fff",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "#222",
   },
 });

@@ -49,6 +49,7 @@ export default function AddGrammarScreen() {
           onPress={handleBack}
           size="md"
           title="Back"
+          variant="ghost"
         />
       </ThemedView>
       <ThemedView style={styles.content}>
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     flexDirection: "row",
     alignItems: "center",
-    paddingBottom: 16,
+    marginBottom: 16,
   },
   content: {
     width: "100%",

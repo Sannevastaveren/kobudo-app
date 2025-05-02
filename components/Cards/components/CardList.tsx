@@ -65,7 +65,7 @@ export function CardList({ collectionId, onCardPress }: CardListProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 8,
+    paddingTop: 16,
     backgroundColor: "none",
     maxHeight: "80%",
   },

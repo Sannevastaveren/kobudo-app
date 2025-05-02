@@ -73,6 +73,7 @@ export default function CollectionScreen() {
 
   const renderExpandedHeader = () => (
     <Animated.View style={[styles.expandedHeader, { opacity: headerOpacity }]}>
+      <ThemedText style={styles.descriptionHeader}>Description</ThemedText>
       {collection?.description && (
         <TouchableOpacity
           style={styles.descriptionContainer}
@@ -115,12 +116,14 @@ export default function CollectionScreen() {
         title="Cards"
         onPress={handleAddCards}
         size="sm"
+        variant="ghost"
       />
       <ThemedButton
         icon="add"
         title="Grammar"
         onPress={handleAddGrammar}
         size="sm"
+        variant="ghost"
       />
 
       <ReviewStatus
@@ -141,12 +144,14 @@ export default function CollectionScreen() {
           title="Add cards"
           onPress={handleAddCards}
           size="sm"
+          variant="ghost"
         />
         <ThemedButton
           icon="add"
           title="Add grammar"
           onPress={handleAddGrammar}
           size="sm"
+          variant="ghost"
         />
       </ThemedView>
       <ThemedTabs
@@ -175,8 +180,8 @@ export default function CollectionScreen() {
             reviewStatus={reviewStatus}
             isLoading={isReviewStatusLoading}
           />
+          {renderExpandedHeader()}
         </Animated.View>
-        {renderExpandedHeader()}
         {renderCondensedHeader()}
       </Animated.View>
       <FlatList
@@ -216,7 +221,8 @@ const styles = StyleSheet.create({
   headerContent: {
     padding: 16,
   },
-  expandedHeader: {
+  expandedHeader: {},
+  descriptionHeader: {
     paddingHorizontal: 16,
   },
   condensedHeader: {
@@ -252,6 +258,7 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 16,
     justifyContent: "space-between",
     marginBottom: 16,
   },

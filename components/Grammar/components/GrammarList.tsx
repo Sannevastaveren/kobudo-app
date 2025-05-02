@@ -35,6 +35,7 @@ export const GrammarList: React.FC<GrammarListProps> = ({ collectionId }) => {
       ) : (
         <FlatList
           data={filteredConcepts}
+          style={styles.list}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
@@ -47,6 +48,11 @@ export const GrammarList: React.FC<GrammarListProps> = ({ collectionId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  list: {
+    paddingTop: 16,
+    flex: 1,
+    gap: 8,
   },
   listContent: {
     padding: 16,

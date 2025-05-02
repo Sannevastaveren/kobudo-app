@@ -40,6 +40,7 @@ export const ReviewStatus: React.FC<ReviewStatusProps> = ({
         title={`Study ${dueCards}/${totalCards} `}
         onPress={handleStudy}
         size="sm"
+        variant="ghost"
       />
     );
   }

@@ -37,6 +37,7 @@ export default function AddCardsScreen() {
           onPress={handleBack}
           size="md"
           title="Back"
+          variant="ghost"
         />
       </ThemedView>
       {!addMethod ? (
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "flex-start",
+    marginBottom: 16,
   },
   methodsContainer: {
     flex: 1,

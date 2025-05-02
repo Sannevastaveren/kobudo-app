@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -21,6 +21,8 @@ import { useFocusEffect } from "expo-router";
 import { useSpacedRepetition } from "../hooks/useSpacedRepetition";
 import { TranslationCard } from "@/utils/database/cards";
 import * as Haptics from "expo-haptics";
+import { ProgressBar } from "@/components/ui/Progressbar";
+import { FlipableCard } from "./FlipableCard";
 
 interface CardTestProps {
   collectionId?: number;
@@ -176,79 +178,71 @@ export const CardTest: React.FC<CardTestProps> = ({ collectionId }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ThemedText style={styles.cardIndex}>
-        {currentIndex}/{totalCards}
-      </ThemedText>
-      <Animated.View style={[styles.cardContainer, cardAnimatedStyle]}>
-        <ThemedView style={styles.cardTextContainer}>
-          <ThemedText style={styles.cardText}>
-            {currentCard.originalText} / {currentCard.translatedText}
+    <View style={styles.container}>
+      <ThemedView style={styles.progressContainer}>
+        <ProgressBar progress={currentIndex / totalCards} fillColor="#4CAF50" />
+      </ThemedView>
+      <View style={styles.contentContainer}>
+        <Animated.View style={[styles.cardContainer, cardAnimatedStyle]}>
+          <ThemedText style={styles.progressText}>
+            Card {currentIndex} of {totalCards}
           </ThemedText>
-          <ThemedIconButton
-            name="speaker"
-            onPress={() => speak(currentCard.translatedText)}
+          <FlipableCard
+            originalText={currentCard.originalText}
+            translatedText={currentCard.translatedText}
+            onSpeakText={speak}
           />
-        </ThemedView>
-        <ThemedTextInput
-          placeholder="Enter your answer"
-          value={userAnswer}
-          onChangeText={setUserAnswer}
-          style={styles.input}
-        />
-        <ThemedButton title="Check" onPress={handleCheckAnswer} />
-        <Animated.View
-          style={[styles.feedbackContainer, feedbackAnimatedStyle]}
-        >
-          <ThemedText
-            style={[
-              styles.resultText,
-              isCorrect ? styles.correctText : styles.incorrectText,
-            ]}
+          <ThemedTextInput
+            placeholder="Enter your answer"
+            value={userAnswer}
+            onChangeText={setUserAnswer}
+            style={styles.input}
+          />
+          <ThemedButton
+            style={styles.checkButton}
+            title="Check"
+            icon="checkmark"
+            onPress={handleCheckAnswer}
+          />
+          <Animated.View
+            style={[styles.feedbackContainer, feedbackAnimatedStyle]}
           >
-            {isCorrect ? "Correct!" : "Incorrect!"}
-          </ThemedText>
+            <ThemedText
+              style={[
+                styles.resultText,
+                isCorrect ? styles.correctText : styles.incorrectText,
+              ]}
+            >
+              {isCorrect ? "Correct!" : "Incorrect!"}
+            </ThemedText>
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
-    </SafeAreaView>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    justifyContent: "center",
-    alignItems: "center",
+    width: "100%",
     height: "100%",
-  },
-  cardIndex: {
-    fontSize: 18,
-    marginBottom: 16,
   },
   cardContainer: {
     width: "100%",
     maxWidth: 400,
     padding: 16,
     borderRadius: 8,
-    backgroundColor: "#222",
+    gap: 16,
   },
-  cardTextContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-    height: 100,
-    backgroundColor: "#333",
-    borderRadius: 8,
-    padding: 16,
-  },
-  cardText: {
-    fontSize: 20,
+  contentContainer: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
-    marginBottom: 16,
     height: 40,
+    backgroundColor: "#222",
   },
   feedbackContainer: {
     position: "absolute",
@@ -268,5 +262,18 @@ const styles = StyleSheet.create({
   },
   incorrectText: {
     color: "#F44336",
+  },
+  progressContainer: {
+    width: "100%",
+    paddingTop: 24,
+    marginBottom: 24,
+  },
+  progressText: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: "#888",
+  },
+  checkButton: {
+    backgroundColor: "rgba(76, 175, 80, 0.8)",
   },
 });

@@ -9,15 +9,20 @@ import {
 } from "@/utils/styles";
 import { IconSymbol, IconSymbolName } from "./ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
+
+const COLORS = {
+  primary: "rgba(76, 175, 80, 0.8)",
+  secondary: "#2196F3",
+} as const;
 
 export type ThemedButtonProps = PressableProps & {
   lightColor?: string;
   darkColor?: string;
   title: string;
   icon?: keyof typeof Ionicons.glyphMap | IconSymbolName;
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "ghost";
   size?: "sm" | "md" | "lg";
+  fullWidth?: boolean;
 };
 
 export function ThemedButton({
@@ -28,6 +33,7 @@ export function ThemedButton({
   icon,
   variant = "primary",
   size = "md",
+  fullWidth = false,
   ...rest
 }: ThemedButtonProps) {
   const backgroundColor = useThemeColor(
@@ -39,11 +45,39 @@ export function ThemedButton({
     "text"
   );
 
+  const getVariantStyles = () => {
+    switch (variant) {
+      case "primary":
+        return {
+          backgroundColor: COLORS.primary,
+          textColor: "#FFFFFF",
+        };
+      case "secondary":
+        return {
+          backgroundColor: COLORS.secondary,
+          textColor: "#FFFFFF",
+        };
+      case "ghost":
+        return {
+          backgroundColor: "#333",
+          textColor: "#fff",
+        };
+      default:
+        return {
+          backgroundColor: COLORS.primary,
+          textColor: "#FFFFFF",
+        };
+    }
+  };
+
+  const variantStyles = getVariantStyles();
+
   const buttonStyle = [
     styles.button,
     styles[size],
-    variant === "outline" && styles.outline,
-    { backgroundColor, borderColor: textColor },
+    styles[variant],
+    fullWidth && styles.fullWidth,
+    { backgroundColor: variantStyles.backgroundColor },
     style as ViewStyle,
   ];
 
@@ -60,16 +94,18 @@ export function ThemedButton({
         <Ionicons
           name={icon as keyof typeof Ionicons.glyphMap}
           size={24}
-          color={textColor}
+          color={variantStyles.textColor}
         />
       ) : (
-        <IconSymbol name={icon as IconSymbolName} size={24} color={textColor} />
+        <IconSymbol
+          name={icon as IconSymbolName}
+          size={24}
+          color={variantStyles.textColor}
+        />
       )}
       <ThemedText
-        style={styles.text}
-        lightColor={lightColor}
-        darkColor={darkColor}
-        weight={variant === "outline" ? "medium" : "semibold"}
+        style={[styles.text, { color: variantStyles.textColor }]}
+        weight={variant === "ghost" ? "medium" : "semibold"}
       >
         {title}
       </ThemedText>
@@ -80,12 +116,10 @@ export function ThemedButton({
 const styles = createStyleSheet({
   button: {
     borderRadius: borderRadius("md"),
-    borderWidth: 0.5,
     flexDirection: "row",
     gap: spacing("xs"),
     alignItems: "center",
     justifyContent: "center",
-    width: "auto",
     ...shadow("sm"),
     transition: "all 0.2s ease-in-out",
   },
@@ -101,8 +135,18 @@ const styles = createStyleSheet({
     paddingVertical: spacing("md"),
     paddingHorizontal: spacing("lg"),
   },
-  outline: {
+  primary: {
+    backgroundColor: COLORS.primary,
+  },
+  secondary: {
+    backgroundColor: COLORS.secondary,
+  },
+  ghost: {
     backgroundColor: "transparent",
+    shadowOpacity: 0,
+  },
+  fullWidth: {
+    width: "100%",
   },
   pressed: {
     transform: [{ scale: 0.98 }],

@@ -126,8 +126,9 @@ const styles = createStyleSheet({
   realtimeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: spacing("sm"),
+    paddingHorizontal: spacing("md"),
+    justifyContent: "flex-start",
+    gap: spacing("md"),
   },
   switch: {
     transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
@@ -135,6 +136,7 @@ const styles = createStyleSheet({
   input: {
     width: "100%",
     height: 120,
+    backgroundColor: "#222",
     textAlignVertical: "top",
   },
   loader: {
@@ -156,6 +158,8 @@ const styles = createStyleSheet({
   buttonContainer: {
     width: "auto",
     flexDirection: "row",
+    paddingHorizontal: spacing("md"),
+    justifyContent: "space-between",
     flexWrap: "wrap",
     gap: spacing("md"),
   },
