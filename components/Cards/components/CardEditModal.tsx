@@ -18,6 +18,7 @@ import { Colors } from "@/constants/Colors";
 import { ThemedIconButton } from "@/components/ThemedIconButton";
 import * as Speech from "expo-speech";
 import { useCards } from "@/components/Cards/hooks/useCards";
+import { Ionicons } from "@expo/vector-icons";
 
 type CardEditModalProps = {
   isVisible: boolean;
@@ -171,12 +172,14 @@ export function CardEditModal({
                   style={[styles.button, styles.cancelButton]}
                   onPress={onClose}
                 >
+                  <Ionicons name="close-outline" size={24} color="white" />
                   <ThemedText style={styles.buttonText}>Cancel</ThemedText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.saveButton]}
                   onPress={handleSave}
                 >
+                  <Ionicons name="checkmark-outline" size={24} color="white" />
                   <ThemedText style={styles.buttonText}>Save</ThemedText>
                 </TouchableOpacity>
               </View>
@@ -258,18 +261,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: "bold",
   },
   inputContainer: {
-    marginBottom: 16,
+    marginBottom: 4,
   },
   inputLabel: {
     fontSize: 16,
-    marginBottom: 8,
+    marginBottom: 4,
     color: Colors.dark.text,
   },
   input: {
@@ -282,7 +285,7 @@ const styles = StyleSheet.create({
   tagScrollContainer: {
     flexDirection: "row",
     gap: 8,
-    paddingVertical: 8,
+    paddingVertical: 4,
   },
   tagButton: {
     paddingHorizontal: 12,
@@ -297,14 +300,17 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginTop: 8,
     gap: 12,
   },
   button: {
     flex: 1,
-    padding: 16,
+    padding: 8,
     borderRadius: 8,
+    justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
+    gap: 4,
   },
   cancelButton: {
     backgroundColor: Colors.dark.background,

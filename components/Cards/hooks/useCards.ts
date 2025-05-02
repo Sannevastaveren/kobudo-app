@@ -15,7 +15,6 @@ export const useCards = (collectionId?: number) => {
     const fetchCards = async () => {
       const cards = await getAllTranslationCards(collectionId);
       setCards(cards);
-      console.log(cards);
     };
 
     if (!reloading) {
