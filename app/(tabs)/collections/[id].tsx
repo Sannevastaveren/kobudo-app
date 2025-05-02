@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { useLocalSearchParams, router } from "expo-router";
+import { useLocalSearchParams, router, Stack } from "expo-router";
 import { CardList } from "@/components/Cards/components/CardList";
 import { useCollections } from "@/components/Collections/hooks/useCollections";
 import { ThemedButton } from "@/components/ThemedButton";
@@ -19,7 +19,7 @@ import { ReviewStatus } from "@/components/Cards/components/ReviewStatus";
 import { useReviewStatus } from "@/components/Cards/hooks/useReviewStatus";
 import { Ionicons } from "@expo/vector-icons";
 
-const HEADER_MIN_HEIGHT = 80;
+const HEADER_MIN_HEIGHT = 60;
 const HEADER_MAX_HEIGHT = 150;
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -95,7 +95,9 @@ export default function CollectionScreen() {
   );
 
   const renderCondensedHeader = () => (
-    <Animated.View
+    <Animated.ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
       style={[
         styles.condensedHeader,
         {
@@ -106,19 +108,33 @@ export default function CollectionScreen() {
           }),
         },
       ]}
+      contentContainerStyle={styles.condensedHeaderContent}
     >
-      <ThemedText style={styles.condensedTitle}>{collection?.name}</ThemedText>
+      <ThemedButton
+        icon="add"
+        title="Cards"
+        onPress={handleAddCards}
+        size="sm"
+      />
+      <ThemedButton
+        icon="add"
+        title="Grammar"
+        onPress={handleAddGrammar}
+        size="sm"
+      />
+
       <ReviewStatus
         collectionId={collectionId}
         reviewStatus={reviewStatus}
         isLoading={isReviewStatusLoading}
         compact
       />
-    </Animated.View>
+    </Animated.ScrollView>
   );
 
   const renderContent = () => (
     <ThemedView style={styles.content}>
+      <Stack.Screen options={{ title: collection?.name }} />
       <ThemedView style={styles.actionBar}>
         <ThemedButton
           icon="add"
@@ -154,7 +170,6 @@ export default function CollectionScreen() {
         <Animated.View
           style={[styles.headerContent, { transform: [{ scale: titleScale }] }]}
         >
-          <ThemedText style={styles.title}>{collection?.name}</ThemedText>
           <ReviewStatus
             collectionId={collectionId}
             reviewStatus={reviewStatus}
@@ -209,16 +224,21 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    gap: 2,
     height: HEADER_MIN_HEIGHT,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
     backgroundColor: "#222",
     borderBottomWidth: 2,
     borderBottomColor: "#333",
+  },
+  condensedHeaderContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  actionButtonsContainer: {
+    flexDirection: "row",
+    gap: 8,
   },
   title: {
     fontSize: 24,

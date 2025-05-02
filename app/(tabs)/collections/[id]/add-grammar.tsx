@@ -45,7 +45,7 @@ export default function AddGrammarScreen() {
     <ThemedView style={styles.container}>
       <ThemedView style={styles.header}>
         <ThemedButton
-          icon="arrow.left"
+          icon="chevron-back"
           onPress={handleBack}
           size="md"
           title="Back"

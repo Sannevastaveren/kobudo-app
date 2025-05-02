@@ -1,10 +1,11 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { router } from "expo-router";
 import { ReviewStatus as ReviewStatusType } from "@/utils/database/cards";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemedButton } from "@/components/ThemedButton";
 
 interface ReviewStatusProps {
   collectionId: number;
@@ -34,29 +35,39 @@ export const ReviewStatus: React.FC<ReviewStatusProps> = ({
 
   if (compact) {
     return (
-      <TouchableOpacity onPress={handleStudy} style={styles.compactContainer}>
-        <Ionicons name="book" size={16} color="#666" />
-        <ThemedText style={styles.compactStats}>
-          {dueCards}/{totalCards}
-        </ThemedText>
-      </TouchableOpacity>
+      <ThemedButton
+        icon="book"
+        title={`Study ${dueCards}/${totalCards} `}
+        onPress={handleStudy}
+        size="sm"
+      />
     );
   }
 
   return (
     <TouchableOpacity onPress={handleStudy} style={styles.container}>
-      <Ionicons name="book" size={20} color="#666" />
-      <ThemedText style={styles.stats}>
-        {dueCards} of {totalCards} cards due
-      </ThemedText>
+      <View style={styles.container}>
+        <View style={styles.statsContainer}>
+          <Ionicons name="book" size={20} color="#666" />
+          <ThemedText style={styles.stats}>
+            {dueCards} of {totalCards} cards due
+          </ThemedText>
+        </View>
+        <View style={styles.statsContainer}>
+          <ThemedText>Go to review</ThemedText>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     gap: 8,
     padding: 8,
     borderRadius: 8,
@@ -73,5 +84,10 @@ const styles = StyleSheet.create({
   compactStats: {
     fontSize: 14,
     fontWeight: "600",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
 });

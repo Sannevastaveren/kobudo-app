@@ -8,12 +8,14 @@ import {
   shadow,
 } from "@/utils/styles";
 import { IconSymbol, IconSymbolName } from "./ui/IconSymbol";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
 
 export type ThemedButtonProps = PressableProps & {
   lightColor?: string;
   darkColor?: string;
   title: string;
-  icon?: string;
+  icon?: keyof typeof Ionicons.glyphMap | IconSymbolName;
   variant?: "primary" | "secondary" | "outline";
   size?: "sm" | "md" | "lg";
 };
@@ -54,7 +56,13 @@ export function ThemedButton({
       ]}
       {...rest}
     >
-      {icon && (
+      {icon && icon in Ionicons.glyphMap ? (
+        <Ionicons
+          name={icon as keyof typeof Ionicons.glyphMap}
+          size={24}
+          color={textColor}
+        />
+      ) : (
         <IconSymbol name={icon as IconSymbolName} size={24} color={textColor} />
       )}
       <ThemedText
@@ -72,9 +80,9 @@ export function ThemedButton({
 const styles = createStyleSheet({
   button: {
     borderRadius: borderRadius("md"),
-    borderWidth: 1,
+    borderWidth: 0.5,
     flexDirection: "row",
-    gap: spacing("sm"),
+    gap: spacing("xs"),
     alignItems: "center",
     justifyContent: "center",
     width: "auto",
