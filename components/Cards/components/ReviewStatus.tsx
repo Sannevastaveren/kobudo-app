@@ -42,6 +42,8 @@ export const ReviewStatus: React.FC<ReviewStatusProps> = ({
     });
   };
 
+  if (!dueCards) return null;
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.statusContainer}>

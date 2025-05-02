@@ -38,7 +38,6 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
     return pairs;
   }
   function handleSaveCards(pairs: WordPair[]) {
-    console.log(pairs);
     addTranslationCardsInBulk(
       pairs.map((pair) => ({
         originalText: pair.english,
