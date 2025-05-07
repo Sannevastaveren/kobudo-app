@@ -16,6 +16,8 @@ import { Collapsible } from "@/components/Collapsible";
 import { useCards } from "@/components/Cards/hooks/useCards";
 import { addTranslationCardsInBulk } from "@/utils/database/cards";
 import { PrelimCardList } from "@/components/Cards/components/PrelimCardList";
+import { ProgressBar } from "@/components/ui/Progressbar";
+import { Colors } from "@/constants/Colors";
 
 const HEADER_MIN_HEIGHT = 60;
 const HEADER_MAX_HEIGHT = 250;
@@ -37,6 +39,7 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
   );
   const [pairs, setPairs] = useState<WordPair[]>([]);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -132,6 +135,30 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
           />
         </ThemedView>
       </Animated.View>
+      {pairs.length > 0 && (
+        <Animated.View
+          style={[
+            styles.progressContainer,
+            {
+              opacity: scrollY.interpolate({
+                inputRange: [0, HEADER_SCROLL_DISTANCE],
+                outputRange: [0, 1],
+                extrapolate: "clamp",
+              }),
+            },
+          ]}
+        >
+          <ProgressBar
+            progress={scrollProgress}
+            height={4}
+            backgroundColor={Colors.dark.cardBackground}
+            fillColor={"green"}
+          />
+          <ThemedText style={styles.progressText}>
+            {Math.round(scrollProgress * 100)}% reviewed
+          </ThemedText>
+        </Animated.View>
+      )}
     </Animated.View>
   );
 
@@ -143,6 +170,20 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
     />
   );
 
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    {
+      useNativeDriver: false,
+      listener: (event: any) => {
+        const { contentOffset, contentSize, layoutMeasurement } =
+          event.nativeEvent;
+        const progress =
+          contentOffset.y / (contentSize.height - layoutMeasurement.height);
+        setScrollProgress(Math.min(Math.max(progress, 0), 1));
+      },
+    }
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.container}>
@@ -151,10 +192,7 @@ export function CopyProcesser({ collectionId }: CopyProcesserProps) {
           <FlatList
             data={[{ key: "content" }]}
             renderItem={renderContent}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-              { useNativeDriver: false }
-            )}
+            onScroll={handleScroll}
             scrollEventThrottle={16}
             contentContainerStyle={[
               styles.scrollContent,
@@ -215,5 +253,22 @@ const styles = StyleSheet.create({
     padding: 12,
     color: "#fff",
     backgroundColor: "#222",
+  },
+  progressContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 4,
+    backgroundColor: Colors.dark.background,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.dark.cardBackground,
+  },
+  progressText: {
+    fontSize: 12,
+    opacity: 0.8,
+    textAlign: "right",
   },
 });
