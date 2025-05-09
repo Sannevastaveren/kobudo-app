@@ -6,7 +6,7 @@ import {
   TypographySize,
   TypographyWeight,
   Shadow,
-} from "../constants/Theme";
+} from "../../constants/Theme";
 
 export const createStyleSheet = <T extends StyleSheet.NamedStyles<T>>(
   styles: T

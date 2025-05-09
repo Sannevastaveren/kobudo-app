@@ -1,75 +1,40 @@
-import { ThemedView } from "@/components/ThemedView";
-import { useCollections } from "@/components/Collections/hooks/useCollections";
-import { StyleSheet } from "react-native";
-import { CollectionList } from "@/components/Collections/components/CollectionList";
-import { CreateCollection } from "@/components/Collections/components/CreateCollection";
-import { useCallback, useState } from "react";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedButton } from "@/components/ThemedButton";
-import { router, useFocusEffect } from "expo-router";
-import { Collection } from "@/utils/database/collections";
+import { IsAdmin } from "@/components/admin/constants";
+import { StyledText, StyledButton } from "@/components/styled";
+import { useChapters } from "@/database/hooks/useChapters";
+import { StyleSheet, View } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const {
-    collections,
-    reload,
-    handleCreateCollection,
-    handleDeleteCollection,
-  } = useCollections();
-  const [showCreateCollection, setShowCreateCollection] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const { chapters, loading, error, refresh } = useChapters();
 
-  useFocusEffect(
-    useCallback(() => {
-      reload();
-    }, [])
-  );
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      reload();
-    } finally {
-      setRefreshing(false);
-    }
-  }, [reload]);
-
-  const handleCreateNewCollection = (name: string, description: string) => {
-    handleCreateCollection(name, description);
-    setShowCreateCollection(false);
-  };
-
-  const handleCollectionPress = (collection: Collection) => {
-    router.push({
-      pathname: "/collections/[id]",
-      params: { id: collection.id.toString() },
+  const handleClick = () => {
+    SheetManager.show("chapter-creation-sheet", {
+      payload: {
+        onChapterCreated: refresh,
+      },
     });
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedText style={styles.title}>Collections</ThemedText>
-        <ThemedButton
-          title="Add"
+    <SafeAreaView style={styles.container}>
+      <View style={styles.chapterContainer}>
+        <StyledText style={styles.title}>Chapters</StyledText>
+        {loading && <StyledText>Loading...</StyledText>}
+        {error && <StyledText>Error: {error.message}</StyledText>}
+        {chapters.map((chapter) => (
+          <StyledText key={chapter.id}>{chapter.name}</StyledText>
+        ))}
+      </View>
+      {IsAdmin && (
+        <StyledButton
+          style={styles.button}
           icon="add"
-          size="sm"
-          onPress={() => setShowCreateCollection(true)}
+          onPress={handleClick}
+          title="Create Chapter"
         />
-        <CreateCollection
-          visible={showCreateCollection}
-          onCreateCollection={handleCreateNewCollection}
-          onCancel={() => setShowCreateCollection(false)}
-        />
-      </ThemedView>
-      <CollectionList
-        collections={collections}
-        onRefresh={onRefresh}
-        refreshing={refreshing}
-        onCollectionPress={handleCollectionPress}
-        onDeleteCollection={handleDeleteCollection}
-      />
-    </ThemedView>
+      )}
+    </SafeAreaView>
   );
 }
 
@@ -80,15 +45,16 @@ const styles = StyleSheet.create({
     gap: 16,
     height: "100%",
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
+  chapterContainer: {
+    flex: 1,
     gap: 16,
-    alignItems: "center",
   },
   title: {
     fontSize: 24,
+    color: "white",
     fontWeight: "bold",
-    marginBottom: 6,
+  },
+  button: {
+    width: "50%",
   },
 });
