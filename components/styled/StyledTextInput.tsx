@@ -59,7 +59,9 @@ export const StyledTextInput: React.FC<StyledTextInputProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    width: "100%",
+  },
   input: {
     width: "100%",
     padding: 12,

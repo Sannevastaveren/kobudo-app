@@ -62,15 +62,6 @@ export const StyledButton: React.FC<StyledButtonProps> = ({
     };
   };
 
-  const getTextStyles = (): TextStyle => {
-    const baseStyle: TextStyle = {
-      ...styles.text,
-      color: variant === "primary" ? colors.tintText : colors.tint,
-    };
-
-    return baseStyle;
-  };
-
   return (
     <TouchableOpacity
       onPress={onPress}

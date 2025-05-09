@@ -1,9 +1,9 @@
 import { ChapterCreationSheet } from "@/components/chapters/ChapterCreationSheet";
 import { registerSheet, SheetDefinition } from "react-native-actions-sheet";
-import ExampleSheet from "@/components/chapters/ExampleSheet";
+import { ReadingSheet } from "@/components/reading-module/ReadingSheet";
 
 registerSheet("chapter-creation-sheet", ChapterCreationSheet);
-registerSheet("example-sheet", ExampleSheet);
+registerSheet("reading-sheet", ReadingSheet);
 
 // We extend some of the types here to give us great intellisense
 // across the app for all registered sheets.
@@ -14,7 +14,11 @@ declare module "react-native-actions-sheet" {
         onChapterCreated: () => Promise<void>;
       };
     }>;
-    "example-sheet": SheetDefinition;
+    "reading-sheet": SheetDefinition<{
+      payload: {
+        chapterId: string;
+      };
+    }>;
   }
 }
 

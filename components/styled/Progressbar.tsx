@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { ThemedView } from "@/components/ThemedView";
 
 interface ProgressBarProps {
   progress: number; // Value between 0 and 1
@@ -19,17 +18,18 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const clampedProgress = Math.min(Math.max(progress, 0), 1);
 
   return (
-    <ThemedView style={[styles.progressBar, { height, backgroundColor }]}>
-      <ThemedView
+    <View style={[styles.progressBar, { height, backgroundColor }]}>
+      <View
         style={[
           styles.progressFill,
           {
             width: `${clampedProgress * 100}%`,
             backgroundColor: fillColor,
+            borderRadius: 18,
           },
         ]}
       />
-    </ThemedView>
+    </View>
   );
 };
 

@@ -21,6 +21,8 @@ interface StyledIconButtonProps {
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
+  backgroundColor?: string;
+  color?: string;
 }
 
 export const StyledIconButton: React.FC<StyledIconButtonProps> = ({
@@ -31,6 +33,8 @@ export const StyledIconButton: React.FC<StyledIconButtonProps> = ({
   disabled = false,
   loading = false,
   style,
+  backgroundColor,
+  color,
 }) => {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "dark"];
@@ -46,14 +50,14 @@ export const StyledIconButton: React.FC<StyledIconButtonProps> = ({
       case "primary":
         return {
           ...baseStyle,
-          backgroundColor: colors.tint,
+          backgroundColor: backgroundColor ?? colors.tint,
         };
       case "secondary":
         return {
           ...baseStyle,
           backgroundColor: "transparent",
           borderWidth: 1,
-          borderColor: colors.tint,
+          borderColor: backgroundColor ?? colors.tint,
         };
       case "ghost":
         return {
@@ -68,12 +72,12 @@ export const StyledIconButton: React.FC<StyledIconButtonProps> = ({
   const getIconColor = (): string => {
     switch (variant) {
       case "primary":
-        return colors.tintText;
+        return color ?? colors.tintText;
       case "secondary":
       case "ghost":
-        return colors.tint;
+        return color ?? colors.tint;
       default:
-        return colors.text;
+        return color ?? colors.text;
     }
   };
 

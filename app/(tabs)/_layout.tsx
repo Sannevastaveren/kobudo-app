@@ -28,10 +28,26 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          title: "Chapters",
+          href: null,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="file-tray-stacked" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="[chapterId]/main"
+        options={{
           title: "Learn",
           tabBarIcon: ({ color }) => (
             <Ionicons name="book" size={28} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="[chapterId]/reading"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

@@ -6,9 +6,33 @@
 const tintColorLight = "#0a7ea4";
 const tintColorDark = "#fff";
 
+export const moduleColors = {
+  reading: {
+    dark: "#009949",
+    main: "#00fd72",
+    light: "rgba(0, 253, 114, 0.4)s",
+  },
+  listening: {
+    dark: "#00809a",
+    main: "#00bde2",
+    light: "rgba(0, 189, 226, 0.4)",
+  },
+  speaking: {
+    dark: "#990000",
+    main: "#ff4545",
+    light: "rgba(255, 69, 69, 0.4)",
+  },
+  grammar: {
+    dark: "#996600",
+    main: "#ffcc33",
+    light: "rgba(255, 204, 51, 0.4)",
+  },
+};
+
 export const Colors = {
   light: {
     text: "#11181C",
+    textSecondary: "#687076",
     background: "#fff",
     tint: tintColorLight,
     tintText: "#000",
@@ -20,6 +44,7 @@ export const Colors = {
   },
   dark: {
     text: "#ECEDEE",
+    textSecondary: "#9BA1A6",
     background: "#151718",
     tint: tintColorDark,
     tintText: "#000",
